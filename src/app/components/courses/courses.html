@@ -1,0 +1,59 @@
+ <h3 class="text-center my-3">Total order price: {{ totalOrderPrice | currency :'EUR':'code' }} (Discount: {{ discountValue }}%)</h3>
+<h3 class="text-center my-3">Selected Cat Id {{ selectedCatId }}</h3>
+
+<div class="mb-3 w-50 m-auto">
+  <label for="" class="form-label">Categories</label>
+  <select class="form-select form-select-lg" name="" id="" [(ngModel)]="selectedCatId" (change)="onCategoryChange()">
+    @for (cat of categories; track cat.id) {
+      <option [value]="cat.id">{{ cat.name }}</option>
+    }
+  </select>
+</div>
+
+<div class="mb-3 w-50 m-auto">
+  <label for="discountInput" class="form-label">Discount %</label>
+  <input type="number" id="discountInput" class="form-control" [(ngModel)]="discountValue" min="0" max="100" />
+</div>
+
+<div class="row row-cols-1 row-cols-md-4 g-4 m-5">
+  @for (course of courses; track course.id; let i=$index,c=$count,f=$first,l=$last,e=$even,o=$odd) {
+    @if (selectedCatId == 0 || course.catId == selectedCatId) {
+      <div class="col">
+        <div class="card">
+          <img [src]="course.Image" class="card-img-top" alt="..." />
+          <div class="card-body">
+            <h5 class="card-title">{{ course.title }}</h5>
+            <p class="card-text">Original Price: {{ course.price | currency :'EUR':'code' }} | Discounted Price: {{ course.price | discount:discountValue | currency :'EUR':'code' }}</p>
+
+            @switch (course.seats) {
+              @case (0) {
+                <p class="card-text">Seats: Full</p>
+              }
+              @case (1) {
+                <p class="card-text">Seats: Last seat</p>
+              }
+              @default {
+                <p class="card-text">Seats: {{ course.seats }}</p>
+              }
+            }
+            <input type="number" #quantityInp />
+            <button
+              class="btn btn-success"
+              (click)="buy(course, quantityInp.value)"
+              [disabled]="course.isProcessing || course.seats == 0"
+            >
+              {{ course.isProcessing ? 'Processing' : 'Buy' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  } @empty {
+    <h1>No courses to view</h1>
+  }
+</div>
+
+<h3>{{date | date:'medium'}}</h3>
+
+
+ 
