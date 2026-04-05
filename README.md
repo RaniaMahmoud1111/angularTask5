@@ -1,38 +1,50 @@
 # CoursesApp
 
-A simple Angular application for browsing and purchasing courses.
+Angular app to browse courses, filter by category, and add new courses through a form. Course and category data come from a [MockAPI](https://mockapi.io/) project.
 
-## Application Logic
+## Before you run the app
 
-### Features
-- **Course Catalog**: Displays a list of available courses with details like title, instructor, price, seats, and image.
-- **Category Filtering**: Filter courses by category (All, Programming, Design, Marketing, Business).
-- **Discount System**: Apply a discount percentage to course prices.
-- **Purchase Logic**:
-  - Enter quantity for each course.
-  - Click "Buy" button to add to total order price.
-  - Button shows "Processing" and disables for 3 seconds after click.
-  - After 3 seconds, button re-enables if seats are available.
-- **Order Summary**: Displays total order price with applied discount.
+1. Create a free project on [mockapi.io](https://mockapi.io/).
+2. Add two resources:
+   - **categories** — field: `name` (string).
+   - **courses** — fields: `title`, `instructor`, `price` (number), `seats` (number), `Image` (string), `catId` (number), `category` (string).
+3. Open `src/environments/environment.ts` (and `environment.prod.ts` for production builds) and set `apiBaseUrl` to your API root, for example `https://YOUR_ID.mockapi.io` (no trailing slash).
 
-### Components
-- **Home**: Static welcome page.
-- **About Us**: Static information page.
-- **Contact Us**: Static contact page.
-- **Courses**: Main component with course listing and purchase functionality.
-- **Not Found**: 404 page for invalid routes.
+## Run locally
 
-### Services
-- **StaticCourses**: Provides course data with methods `getCoursesByCatID()` and `getCourseByID()`.
-- **CategoriesService**: Provides category data with `getAllCategories()`.
+```bash
+npm install
+ng serve
+```
 
-### Routing
-- Default route redirects to `/home`.
-- Routes: `/home`, `/about-us`, `/contact-us`, `/courses`, `/login`.
-- Wildcard route for 404 handling.
+Open [http://localhost:4200/](http://localhost:4200/).
 
-## Development
+## What the app does
 
-Run `npm install` to install dependencies, then `ng serve` to start the development server.
+- **Courses** — Lists courses from the API. Pick a category (including “All”), set a discount %, and use **Buy** to add a line to the running order total (with a short “processing” state).
+- **Insert course** — Form to create a course: category dropdown (from API), title, instructor, price, seats, image path/URL, and category label. On success you are sent back to **Courses**.
 
-Navigate to `http://localhost:4200/` to view the app.
+## Main pieces
+
+| Area | Role |
+|------|------|
+| `src/environments/environment.ts` | `apiBaseUrl` for MockAPI |
+| `CategoryService` | `getAllCategories()` → `GET /categories` |
+| `CourseService` | `getAllCourses()`, `getCoursesByCategoryID(id)`, `getCourseByID(id)`, `addCourse(payload)` |
+| `Courses` component | Loads categories and courses; unsubscribes HTTP subscriptions in `ngOnDestroy` |
+| `InsertCourse` component | Insert form; same unsubscribe pattern |
+
+## Routes
+
+| Path | Page |
+|------|------|
+| `/` | Redirects to `/home` |
+| `/home`, `/about-us`, `/contact-us` | Static pages |
+| `/courses` | Course catalog |
+| `/insertcourse` | New course form |
+| `/login` | Login page |
+| `**` | Not found |
+
+## Older files (optional)
+
+`StaticCourses` and `CategoriesService` still exist under `src/app/services/` but the **Courses** and **Insert course** flows use `CourseService` and `CategoryService` with HTTP instead.

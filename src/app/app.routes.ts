@@ -4,6 +4,7 @@ import { AboutUs } from './components/about-us/about-us';
 import { ContactUs } from './components/contact-us/contact-us';
 import { Login } from './auth/login/login';
 import { Courses } from './components/courses/courses';
+import { InsertCourse } from './components/insert-course/insert-course';
 import { NotFound } from './components/not-found/not-found';
 
 export const routes: Routes = [ //first match wins
@@ -13,5 +14,6 @@ export const routes: Routes = [ //first match wins
   { path: 'contact-us', component: ContactUs },
   { path: 'login', component: Login },
   { path: 'courses', component: Courses },
+  { path: 'insertcourse', component: InsertCourse },
   { path: '**', component: NotFound },//wildcard route
 ];
